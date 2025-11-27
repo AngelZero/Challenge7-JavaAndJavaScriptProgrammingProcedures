@@ -60,7 +60,7 @@ backend/target/site/jacoco/index.html
   ```
 ---
 
-## Frontend (for later sprints)
+## Frontend 
 
 ```bash
 cd frontend
@@ -69,7 +69,26 @@ npm run serve
 # http://localhost:5173
 ```
 
-> Frontend unit tests with Jest and additional documentation will be added in **Sprint 2** and **Sprint 3**, respectively.
+# Sprint 2 — Frontend Testing Notes
+
+## What we tested
+- Pure functions in `js/graph.js`: `validateGraphData`, `buildGraph`, `getNearbyCities`, and `Graph`.
+- Positive and negative scenarios: invalid datasets, unknown cities, invalid distances, filtering and sorting.
+
+## Environment decisions
+- Used native ESM via `"type": "module"` in `frontend/package.json`.
+- Jest config limited coverage collection to `js/graph.js` to align with this sprint’s scope.
+
+## Edge cases covered
+- Duplicate cities, blank or non-string city entries.
+- Edges referencing unknown cities.
+- Non-finite and negative distances.
+- Unknown destination and non-Graph inputs to `getNearbyCities`.
+- Sorting by ascending distance and default max distance behavior.
+
+## Difficulties & strategies
+- Ensured ESM compatibility in Jest by configuring `type: module` and `testEnvironment: node`.
+- Kept tests pure (no DOM or network), focusing on deterministic, unit-testable logic.
 
 ```
 ```
