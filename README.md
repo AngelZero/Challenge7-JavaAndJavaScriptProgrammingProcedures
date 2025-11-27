@@ -1,66 +1,41 @@
+
 # BookingMx
 
-Minimal vanilla JS + Spring Boot project to practice unit tests.
+Minimal Vanilla JS + Spring Boot project to practice **unit tests** and **documentation**.
 
 ---
 
-## Sprint 1 — Backend Unit Tests (JUnit + JaCoCo)
+## Project Overview
 
-**Scope**
-- Implement unit tests for the **reservations module** (service layer).
-- Cover main behaviors: **create**, **update**, **cancel**, **list**, and date **validation**.
-- Include **positive and negative scenarios** (e.g., `BadRequestException`, `NotFoundException`).
-- Measure coverage with **JaCoCo**; **target ≥ 90%**.  
-  - Achieved **≥ 90% on the service layer** for this sprint.
-- Provide evidence and a short issue log.
+**Backend (Java/Spring Boot)** — Reservations module with endpoints to list, create, update, and cancel reservations. The service layer enforces date validation and status rules; data is kept in an in-memory repository.
 
-**Test locations**
-- Unit tests: `src/test/java/com/bookingmx/reservations/...`
-- Service tests file: `ReservationServiceTest.java`
-
-**Evidence (added to repo)**
-- `docs/tests-passing-sprint1.png` — screenshot of passing tests.
-- `docs/coverage-sprint1.png` — screenshot of JaCoCo summary page.
-- `docs/issues-sprint1.md` — brief log of issues found and how they were resolved.
+**Frontend (Vanilla JS)** — Two features:
+- **Nearby Cities Graph**: pure functions (`js/graph.js`) to validate datasets, build a graph, and compute nearby cities within a maximum distance, sorted ascending.
+- **Reservations UI**: simple list/form that calls the backend API.
 
 ---
 
-## How to run the backend
+## Install & Run
+
+### Backend
+**Prereqs:** JDK 18 (or compatible), Maven.
 ```bash
 cd backend
 mvn spring-boot:run
+# API: http://localhost:8080/api/reservations
 ````
 
-## How to run tests and generate coverage
+Run tests + coverage (Sprint 1):
 
 ```bash
 cd backend
-mvn clean verify      # runs tests + generates JaCoCo HTML report
+mvn clean verify
+# Coverage (HTML): backend/target/site/jacoco/index.html
 ```
 
-**Open coverage report**
+### Frontend
 
-```
-backend/target/site/jacoco/index.html
-```
----
-
-## Repository notes (Sprint 1)
-
-* Standard Maven layout:
-
-  ```
-  backend/
-    src/
-      main/
-        java/...
-        resources/...
-      test/
-        java/...
-  ```
----
-
-## Frontend 
+**Prereqs:** Node.js 18+ and npm.
 
 ```bash
 cd frontend
@@ -69,26 +44,123 @@ npm run serve
 # http://localhost:5173
 ```
 
-# Sprint 2 — Frontend Testing Notes
+Run tests + coverage (Sprint 2):
 
-## What we tested
-- Pure functions in `js/graph.js`: `validateGraphData`, `buildGraph`, `getNearbyCities`, and `Graph`.
-- Positive and negative scenarios: invalid datasets, unknown cities, invalid distances, filtering and sorting.
+```bash
+cd frontend
+npm run test
+npm run test:coverage
+# Coverage (HTML): frontend/coverage/lcov-report/index.html
+```
 
-## Environment decisions
-- Used native ESM via `"type": "module"` in `frontend/package.json`.
-- Jest config limited coverage collection to `js/graph.js` to align with this sprint’s scope.
+---
 
-## Edge cases covered
-- Duplicate cities, blank or non-string city entries.
-- Edges referencing unknown cities.
-- Non-finite and negative distances.
-- Unknown destination and non-Graph inputs to `getNearbyCities`.
-- Sorting by ascending distance and default max distance behavior.
+## Sprint 1 — Backend Unit Tests (JUnit + JaCoCo)
 
-## Difficulties & strategies
-- Ensured ESM compatibility in Jest by configuring `type: module` and `testEnvironment: node`.
-- Kept tests pure (no DOM or network), focusing on deterministic, unit-testable logic.
+**Scope**
+
+* Unit tests for the **reservations module** (service layer).
+* Behaviors: **create**, **update**, **cancel**, **list**; date **validation**.
+* Positive & negative scenarios (`BadRequestException`, `NotFoundException`).
+* Coverage measured with **JaCoCo**; **target ≥ 90%** on service layer.
+* Evidence and short issue log included.
+
+**Test locations**
+
+* `backend/src/test/java/com/bookingmx/reservations/...`
+* Main file: `ReservationServiceTest.java`
+
+**Sample expected output (terminal)**
 
 ```
+[INFO] --- surefire:test ---
+Tests run: N, Failures: 0, Errors: 0, Skipped: 0
+[INFO] --- jacoco:report ---
+```
+
+---
+
+## Sprint 2 — Frontend Unit Tests (Jest + Coverage)
+
+**What was tested**
+
+* Pure functions in `js/graph.js`: `Graph`, `validateGraphData`, `buildGraph`, `getNearbyCities`.
+* Invalid datasets, unknown cities, invalid distances, filtering, sorting, default max distance, and non-Graph inputs.
+
+**Environment**
+
+* Native ESM via `"type": "module"`.
+* Jest configured for Node environment; coverage limited to `js/graph.js` (this sprint’s scope).
+
+**Sample expected output (terminal)**
+
+```
+PASS js/__tests__/graph.test.js
+All files | % Stmts > 90 | % Branch > 90 | % Funcs > 90 | % Lines > 90
+```
+
+---
+
+## Sprint 3 — Documentation & Diagrams
+
+**What’s included**
+
+* Javadoc/JsDoc added to core classes/functions
+* Diagrams
+
+---
+
+## Repository Structure
+
+```
+backend/
+  src/
+    main/java/com/bookingmx/reservations/...
+    test/java/com/bookingmx/reservations/...
+  target/site/jacoco/index.html
+
+frontend/
+  js/graph.js
+  js/__tests__/graph.test.js
+  coverage/lcov-report/index.html
+  index.html, app.js, js/api.js, styles.css
+
+docs/
+  coverage-sprint1.png
+  tests-passing-sprint1.png
+  coverage-sprint2.png
+  tests-passing-sprint2.png
+  diagrams-sprint3.pdf
+  issues-sprint1.md
+  issues-sprint2.md
+```
+
+---
+
+## Examples (for quick verification)
+
+**Backend — Create (valid)**
+
+```
+POST /api/reservations → 200 OK
+{ "id": 1, "guestName": "...", "hotelName": "...", "status": "ACTIVE", ... }
+```
+
+**Backend — Create (invalid dates)**
+
+```
+POST /api/reservations → 400 Bad Request
+{ "status": 400, "message": "Check-out must be after check-in" }
+```
+
+**Frontend — Nearby ≤ 50 km**
+
+```
+Destination: Guadalajara → Results: [Tlaquepaque (10), Zapopan (12)]
+```
+
+**Frontend — Unknown destination**
+
+```
+Destination: Foo City → Results: []
 ```

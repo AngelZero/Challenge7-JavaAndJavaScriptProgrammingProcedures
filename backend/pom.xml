@@ -15,6 +15,8 @@
         <spring-boot.version>3.3.4</spring-boot.version>
         <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
         <jacoco.version>0.8.11</jacoco.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
     </properties>
 
     <dependencyManagement>
@@ -105,6 +107,22 @@
                 <version>3.11.0</version>
                 <configuration>
                     <release>18</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.12.0</version>
+                <configuration>
+                    <!-- Write here, always -->
+                    <outputDirectory>${project.build.directory}/site/apidocs</outputDirectory>
+
+                    <!-- Avoid doclint nagging on JDK 18 if comments aren’t perfect -->
+                    <doclint>none</doclint>
+
+                    <!-- Match your build; silences the “platform encoding” warning -->
+                    <encoding>UTF-8</encoding>
+                    <source>18</source>
                 </configuration>
             </plugin>
 

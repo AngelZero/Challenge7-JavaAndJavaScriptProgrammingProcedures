@@ -3,47 +3,51 @@
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Domain model for a reservation.
+ * Equality and hash code are based on the {@code id} field.
+ */
 public class Reservation {
     private Long id;
     private String guestName;
     private String hotelName;
     private LocalDate checkIn;
     private LocalDate checkOut;
-<span class="pc" id="L12">    private ReservationStatus status = ReservationStatus.ACTIVE;</span>
+<span class="pc" id="L16">    private ReservationStatus status = ReservationStatus.ACTIVE;</span>
 
-<span class="nc" id="L14">    public Reservation() {}</span>
+<span class="nc" id="L18">    public Reservation() {}</span>
 
-<span class="fc" id="L16">    public Reservation(Long id, String guestName, String hotelName, LocalDate checkIn, LocalDate checkOut) {</span>
-<span class="fc" id="L17">        this.id = id;</span>
-<span class="fc" id="L18">        this.guestName = guestName;</span>
-<span class="fc" id="L19">        this.hotelName = hotelName;</span>
-<span class="fc" id="L20">        this.checkIn = checkIn;</span>
-<span class="fc" id="L21">        this.checkOut = checkOut;</span>
-<span class="fc" id="L22">        this.status = ReservationStatus.ACTIVE;</span>
-<span class="fc" id="L23">    }</span>
+<span class="fc" id="L20">    public Reservation(Long id, String guestName, String hotelName, LocalDate checkIn, LocalDate checkOut) {</span>
+<span class="fc" id="L21">        this.id = id;</span>
+<span class="fc" id="L22">        this.guestName = guestName;</span>
+<span class="fc" id="L23">        this.hotelName = hotelName;</span>
+<span class="fc" id="L24">        this.checkIn = checkIn;</span>
+<span class="fc" id="L25">        this.checkOut = checkOut;</span>
+<span class="fc" id="L26">        this.status = ReservationStatus.ACTIVE;</span>
+<span class="fc" id="L27">    }</span>
 
-<span class="fc" id="L25">    public Long getId() { return id; }</span>
-<span class="fc" id="L26">    public void setId(Long id) { this.id = id; }</span>
-<span class="fc" id="L27">    public String getGuestName() { return guestName; }</span>
-<span class="fc" id="L28">    public void setGuestName(String guestName) { this.guestName = guestName; }</span>
-<span class="fc" id="L29">    public String getHotelName() { return hotelName; }</span>
-<span class="fc" id="L30">    public void setHotelName(String hotelName) { this.hotelName = hotelName; }</span>
-<span class="fc" id="L31">    public LocalDate getCheckIn() { return checkIn; }</span>
-<span class="fc" id="L32">    public void setCheckIn(LocalDate checkIn) { this.checkIn = checkIn; }</span>
-<span class="fc" id="L33">    public LocalDate getCheckOut() { return checkOut; }</span>
-<span class="fc" id="L34">    public void setCheckOut(LocalDate checkOut) { this.checkOut = checkOut; }</span>
-<span class="fc" id="L35">    public ReservationStatus getStatus() { return status; }</span>
-<span class="fc" id="L36">    public void setStatus(ReservationStatus status) { this.status = status; }</span>
+<span class="fc" id="L29">    public Long getId() { return id; }</span>
+<span class="fc" id="L30">    public void setId(Long id) { this.id = id; }</span>
+<span class="fc" id="L31">    public String getGuestName() { return guestName; }</span>
+<span class="fc" id="L32">    public void setGuestName(String guestName) { this.guestName = guestName; }</span>
+<span class="fc" id="L33">    public String getHotelName() { return hotelName; }</span>
+<span class="fc" id="L34">    public void setHotelName(String hotelName) { this.hotelName = hotelName; }</span>
+<span class="fc" id="L35">    public LocalDate getCheckIn() { return checkIn; }</span>
+<span class="fc" id="L36">    public void setCheckIn(LocalDate checkIn) { this.checkIn = checkIn; }</span>
+<span class="fc" id="L37">    public LocalDate getCheckOut() { return checkOut; }</span>
+<span class="fc" id="L38">    public void setCheckOut(LocalDate checkOut) { this.checkOut = checkOut; }</span>
+<span class="fc" id="L39">    public ReservationStatus getStatus() { return status; }</span>
+<span class="fc" id="L40">    public void setStatus(ReservationStatus status) { this.status = status; }</span>
 
-<span class="fc bfc" id="L38" title="All 2 branches covered.">    public boolean isActive() { return this.status == ReservationStatus.ACTIVE; }</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">    public boolean isActive() { return this.status == ReservationStatus.ACTIVE; }</span>
 
     @Override public boolean equals(Object o) {
-<span class="pc bpc" id="L41" title="1 of 2 branches missed.">        if (this == o) return true;</span>
-<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (!(o instanceof Reservation)) return false;</span>
-<span class="fc" id="L43">        Reservation that = (Reservation) o;</span>
-<span class="fc" id="L44">        return Objects.equals(id, that.id);</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (!(o instanceof Reservation)) return false;</span>
+<span class="fc" id="L47">        Reservation that = (Reservation) o;</span>
+<span class="fc" id="L48">        return Objects.equals(id, that.id);</span>
     }
 
-<span class="fc" id="L47">    @Override public int hashCode() { return Objects.hash(id); }</span>
+<span class="fc" id="L51">    @Override public int hashCode() { return Objects.hash(id); }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

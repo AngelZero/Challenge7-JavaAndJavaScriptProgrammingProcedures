@@ -7,26 +7,32 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.Map;
 
+/**
+ * Global exception handler mapping domain exceptions to HTTP responses.
+ * - BadRequestException → 400
+ * - NotFoundException  → 404
+ * - Exception          → 500 (generic)
+ */
 @RestControllerAdvice
-<span class="nc" id="L11">public class ApiExceptionHandler {</span>
+<span class="nc" id="L17">public class ApiExceptionHandler {</span>
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity&lt;?&gt; badRequest(BadRequestException ex) {
-<span class="nc" id="L15">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody(ex.getMessage(), 400));</span>
+<span class="nc" id="L21">        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorBody(ex.getMessage(), 400));</span>
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity&lt;?&gt; notFound(NotFoundException ex) {
-<span class="nc" id="L20">        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody(ex.getMessage(), 404));</span>
+<span class="nc" id="L26">        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody(ex.getMessage(), 404));</span>
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity&lt;?&gt; generic(Exception ex) {
-<span class="nc" id="L25">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody(&quot;Unexpected error&quot;, 500));</span>
+<span class="nc" id="L31">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorBody(&quot;Unexpected error&quot;, 500));</span>
     }
 
     private Map&lt;String, Object&gt; errorBody(String message, int status) {
-<span class="nc" id="L29">        return Map.of(&quot;timestamp&quot;, Instant.now().toString(), &quot;status&quot;, status, &quot;message&quot;, message);</span>
+<span class="nc" id="L35">        return Map.of(&quot;timestamp&quot;, Instant.now().toString(), &quot;status&quot;, status, &quot;message&quot;, message);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

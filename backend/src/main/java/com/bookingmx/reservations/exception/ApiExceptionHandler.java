@@ -7,6 +7,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.Map;
 
+/**
+ * Global exception handler mapping domain exceptions to HTTP responses.
+ * - BadRequestException → 400
+ * - NotFoundException  → 404
+ * - Exception          → 500 (generic)
+ */
 @RestControllerAdvice
 public class ApiExceptionHandler {
 

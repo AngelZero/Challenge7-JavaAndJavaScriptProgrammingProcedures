@@ -1,16 +1,25 @@
 // Graph data structures and algorithms for nearby cities.
 // Keep functions pure for easy Jest unit testing.
 
+/**
+ * Undirected graph using adjacency lists.
+ * Keys are city names; edges have shape { to: string, distance: number }.
+ */
 export class Graph {
   constructor() {
     this.adj = new Map(); // city -> Array<{to, distance}>
   }
 
+/** Adds a city node. @throws {Error} if name invalid */
   addCity(name) {
     if (!name || typeof name !== "string") throw new Error("Invalid city name");
     if (!this.adj.has(name)) this.adj.set(name, []);
   }
 
+/**
+   * Adds an undirected edge between existing cities.
+   * @throws {Error} if a city is unknown or distance is negative/non-finite
+   */
   addEdge(from, to, distanceKm) {
     if (!this.adj.has(from) || !this.adj.has(to)) throw new Error("Unknown city");
     if (!Number.isFinite(distanceKm) || distanceKm < 0) throw new Error("Invalid distance");
@@ -18,13 +27,18 @@ export class Graph {
     this.adj.get(to).push({ to: from, distance: distanceKm }); // undirected
   }
 
+/** Returns neighbors of a city. @throws {Error} if city unknown */
   neighbors(city) {
     if (!this.adj.has(city)) throw new Error("Unknown city");
     return [...this.adj.get(city)];
   }
 }
 
-// Validates input dataset (array of cities, array of edges)
+/**
+ * Validates dataset used to build the graph.
+ * @param {{cities:string[], edges:{from:string,to:string,distance:number}[]}} data
+ * @returns {{ok:true}|{ok:false,reason:string}}
+ */
 export function validateGraphData({ cities, edges }) {
   if (!Array.isArray(cities) || !Array.isArray(edges)) return { ok: false, reason: "cities/edges must be arrays" };
   const citySet = new Set(cities);
@@ -38,6 +52,12 @@ export function validateGraphData({ cities, edges }) {
   return { ok: true };
 }
 
+/**
+ * Builds a Graph from valid cities and edges.
+ * @param {string[]} cities
+ * @param {{from:string,to:string,distance:number}[]} edges
+ * @returns {Graph}
+ */
 export function buildGraph(cities, edges) {
   const g = new Graph();
   for (const c of cities) g.addCity(c);
@@ -45,7 +65,15 @@ export function buildGraph(cities, edges) {
   return g;
 }
 
-// Returns nearby cities within <= maxDistance (direct connections only, for MVP)
+/**
+ * Returns nearby cities connected directly to a destination within maxDistance.
+ * Results are sorted ascending by distance.
+ * @param {Graph} graph
+ * @param {string} destination
+ * @param {number} [maxDistanceKm=250]
+ * @returns {{city:string, distance:number}[]}
+ * @throws {Error} if graph is not a Graph
+ */
 export function getNearbyCities(graph, destination, maxDistanceKm = 250) {
   if (!(graph instanceof Graph)) throw new Error("graph must be Graph");
   if (typeof destination !== "string" || !graph.adj.has(destination)) return [];

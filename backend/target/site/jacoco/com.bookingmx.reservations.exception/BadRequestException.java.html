@@ -3,8 +3,9 @@
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/** Signals a 400 Bad Request due to invalid input or state. */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BadRequestException extends RuntimeException {
-<span class="fc" id="L8">    public BadRequestException(String m) { super(m); }</span>
+<span class="fc" id="L9">    public BadRequestException(String m) { super(m); }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

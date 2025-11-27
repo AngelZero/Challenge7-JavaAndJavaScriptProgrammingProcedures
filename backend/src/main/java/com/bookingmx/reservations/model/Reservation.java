@@ -3,6 +3,10 @@ package com.bookingmx.reservations.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+/**
+ * Domain model for a reservation.
+ * Equality and hash code are based on the {@code id} field.
+ */
 public class Reservation {
     private Long id;
     private String guestName;

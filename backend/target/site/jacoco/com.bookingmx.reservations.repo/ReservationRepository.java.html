@@ -5,26 +5,38 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-<span class="fc" id="L8">public class ReservationRepository {</span>
-<span class="fc" id="L9">    private final Map&lt;Long, Reservation&gt; store = new ConcurrentHashMap&lt;&gt;();</span>
-<span class="fc" id="L10">    private final AtomicLong seq = new AtomicLong(1L);</span>
+/**
+ * In-memory repository for Reservation entities.
+ * Not thread-safe beyond basic ConcurrentHashMap semantics; suitable for demo/testing.
+ */
+<span class="fc" id="L12">public class ReservationRepository {</span>
+<span class="fc" id="L13">    private final Map&lt;Long, Reservation&gt; store = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L14">    private final AtomicLong seq = new AtomicLong(1L);</span>
 
+    /** @return snapshot list of all reservations */
     public List&lt;Reservation&gt; findAll() {
-<span class="fc" id="L13">        return new ArrayList&lt;&gt;(store.values());</span>
+<span class="fc" id="L18">        return new ArrayList&lt;&gt;(store.values());</span>
     }
 
+    /** @return reservation by id or Optional.empty() if not found */
     public Optional&lt;Reservation&gt; findById(Long id) {
-<span class="fc" id="L17">        return Optional.ofNullable(store.get(id));</span>
+<span class="fc" id="L23">        return Optional.ofNullable(store.get(id));</span>
     }
 
+    /**
+     * Persists a reservation; assigns an id when null.
+     * @param r reservation to save
+     * @return saved reservation (with id)
+     */
     public Reservation save(Reservation r) {
-<span class="fc bfc" id="L21" title="All 2 branches covered.">        if (r.getId() == null) r.setId(seq.getAndIncrement());</span>
-<span class="fc" id="L22">        store.put(r.getId(), r);</span>
-<span class="fc" id="L23">        return r;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (r.getId() == null) r.setId(seq.getAndIncrement());</span>
+<span class="fc" id="L33">        store.put(r.getId(), r);</span>
+<span class="fc" id="L34">        return r;</span>
     }
 
+    /** Deletes a reservation by id (no-op if absent). */
     public void delete(Long id) {
-<span class="fc" id="L27">        store.remove(id);</span>
-<span class="fc" id="L28">    }</span>
+<span class="fc" id="L39">        store.remove(id);</span>
+<span class="fc" id="L40">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
