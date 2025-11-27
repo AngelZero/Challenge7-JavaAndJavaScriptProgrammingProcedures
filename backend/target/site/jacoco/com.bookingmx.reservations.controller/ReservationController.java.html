@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for reservations.
+ * Produces/consumes application/json and maps service results to ReservationResponse DTOs.
+ */
 @RestController
 @CrossOrigin(origins = {&quot;http://localhost:5173&quot;, &quot;http://127.0.0.1:5173&quot;, &quot;*&quot;})
 @RequestMapping(value = &quot;/api/reservations&quot;, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -18,35 +22,39 @@ public class ReservationController {
 
     private final ReservationService service;
 
-<span class="nc" id="L21">    public ReservationController(ReservationService service) {</span>
-<span class="nc" id="L22">        this.service = service;</span>
-<span class="nc" id="L23">    }</span>
+<span class="nc" id="L25">    public ReservationController(ReservationService service) {</span>
+<span class="nc" id="L26">        this.service = service;</span>
+<span class="nc" id="L27">    }</span>
 
+    /** @return all reservations as DTOs */
     @GetMapping
     public List&lt;ReservationResponse&gt; list() {
-<span class="nc" id="L27">        return service.list().stream()</span>
-<span class="nc" id="L28">                .map(this::toResponse)</span>
-<span class="nc" id="L29">                .toList();</span>
+<span class="nc" id="L32">        return service.list().stream()</span>
+<span class="nc" id="L33">                .map(this::toResponse)</span>
+<span class="nc" id="L34">                .toList();</span>
     }
 
+    /** Creates a new reservation. @return created DTO */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReservationResponse create(@Valid @RequestBody ReservationRequest req) {
-<span class="nc" id="L34">        return toResponse(service.create(req));</span>
+<span class="nc" id="L40">        return toResponse(service.create(req));</span>
     }
 
+    /** Updates an existing reservation. @return updated DTO */
     @PutMapping(value = &quot;/{id}&quot;, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReservationResponse update(@PathVariable(&quot;id&quot;) Long id, @Valid @RequestBody ReservationRequest req) {
-<span class="nc" id="L39">        return toResponse(service.update(id, req));</span>
+<span class="nc" id="L46">        return toResponse(service.update(id, req));</span>
     }
 
+    /** Cancels a reservation. @return canceled DTO */
     @DeleteMapping(&quot;/{id}&quot;)
     public ReservationResponse cancel(@PathVariable(&quot;id&quot;) Long id) {
-<span class="nc" id="L44">        return toResponse(service.cancel(id));</span>
+<span class="nc" id="L52">        return toResponse(service.cancel(id));</span>
     }
 
     private ReservationResponse toResponse(Reservation r) {
-<span class="nc" id="L48">        return new ReservationResponse(</span>
-<span class="nc" id="L49">                r.getId(), r.getGuestName(), r.getHotelName(), r.getCheckIn(), r.getCheckOut(), r.getStatus()</span>
+<span class="nc" id="L56">        return new ReservationResponse(</span>
+<span class="nc" id="L57">                r.getId(), r.getGuestName(), r.getHotelName(), r.getCheckIn(), r.getCheckOut(), r.getStatus()</span>
         );
     }
 }

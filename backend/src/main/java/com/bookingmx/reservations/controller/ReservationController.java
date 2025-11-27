@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for reservations.
+ * Produces/consumes application/json and maps service results to ReservationResponse DTOs.
+ */
 @RestController
 @CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173", "*"})
 @RequestMapping(value = "/api/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -22,6 +26,7 @@ public class ReservationController {
         this.service = service;
     }
 
+    /** @return all reservations as DTOs */
     @GetMapping
     public List<ReservationResponse> list() {
         return service.list().stream()
@@ -29,16 +34,19 @@ public class ReservationController {
                 .toList();
     }
 
+    /** Creates a new reservation. @return created DTO */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReservationResponse create(@Valid @RequestBody ReservationRequest req) {
         return toResponse(service.create(req));
     }
 
+    /** Updates an existing reservation. @return updated DTO */
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ReservationResponse update(@PathVariable("id") Long id, @Valid @RequestBody ReservationRequest req) {
         return toResponse(service.update(id, req));
     }
 
+    /** Cancels a reservation. @return canceled DTO */
     @DeleteMapping("/{id}")
     public ReservationResponse cancel(@PathVariable("id") Long id) {
         return toResponse(service.cancel(id));

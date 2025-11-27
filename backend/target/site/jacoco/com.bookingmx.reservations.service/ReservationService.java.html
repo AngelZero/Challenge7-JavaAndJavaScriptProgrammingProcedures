@@ -12,42 +12,77 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+
+/**
+ * Business logic for reservations: list, create, update, cancel.
+ * Enforces date validation and status rules before delegating to the repository.
+ */
 @Service
-<span class="fc" id="L16">public class ReservationService {</span>
-<span class="fc" id="L17">    private final ReservationRepository repo = new ReservationRepository();</span>
+<span class="fc" id="L21">public class ReservationService {</span>
+<span class="fc" id="L22">    private final ReservationRepository repo = new ReservationRepository();</span>
 
+    /**
+     * Returns all reservations.
+     * @return list of reservations (possibly empty)
+     */
     public List&lt;Reservation&gt; list() {
-<span class="fc" id="L20">        return repo.findAll();</span>
+<span class="fc" id="L29">        return repo.findAll();</span>
     }
 
+    /**
+     * Creates a reservation after validating date rules.
+     * @param req reservation data (guest, hotel, check-in, check-out)
+     * @return persisted reservation with generated id and ACTIVE status
+     * @throws BadRequestException if any date is null, not in the future, or check-out is not after check-in
+     */
     public Reservation create(ReservationRequest req) {
-<span class="fc" id="L24">        validateDates(req.getCheckIn(), req.getCheckOut());</span>
-<span class="fc" id="L25">        Reservation r = new Reservation(null, req.getGuestName(), req.getHotelName(), req.getCheckIn(), req.getCheckOut());</span>
-<span class="fc" id="L26">        return repo.save(r);</span>
+<span class="fc" id="L39">        validateDates(req.getCheckIn(), req.getCheckOut());</span>
+<span class="fc" id="L40">        Reservation r = new Reservation(null, req.getGuestName(), req.getHotelName(), req.getCheckIn(), req.getCheckOut());</span>
+<span class="fc" id="L41">        return repo.save(r);</span>
     }
 
+    /**
+     * Updates an existing reservation if it exists and is ACTIVE.
+     * @param id reservation id
+     * @param req new values (guest, hotel, check-in, check-out)
+     * @return updated reservation
+     * @throws NotFoundException if the reservation does not exist
+     * @throws BadRequestException if the reservation is CANCELED or dates are invalid
+     */
     public Reservation update(Long id, ReservationRequest req) {
-<span class="fc" id="L30">        Reservation existing = repo.findById(id).orElseThrow(() -&gt; new NotFoundException(&quot;Reservation not found&quot;));</span>
-<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (!existing.isActive()) throw new BadRequestException(&quot;Cannot update a canceled reservation&quot;);</span>
-<span class="fc" id="L32">        validateDates(req.getCheckIn(), req.getCheckOut());</span>
-<span class="fc" id="L33">        existing.setGuestName(req.getGuestName());</span>
-<span class="fc" id="L34">        existing.setHotelName(req.getHotelName());</span>
-<span class="fc" id="L35">        existing.setCheckIn(req.getCheckIn());</span>
-<span class="fc" id="L36">        existing.setCheckOut(req.getCheckOut());</span>
-<span class="fc" id="L37">        return repo.save(existing);</span>
+<span class="fc" id="L53">        Reservation existing = repo.findById(id).orElseThrow(() -&gt; new NotFoundException(&quot;Reservation not found&quot;));</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        if (!existing.isActive()) throw new BadRequestException(&quot;Cannot update a canceled reservation&quot;);</span>
+<span class="fc" id="L55">        validateDates(req.getCheckIn(), req.getCheckOut());</span>
+<span class="fc" id="L56">        existing.setGuestName(req.getGuestName());</span>
+<span class="fc" id="L57">        existing.setHotelName(req.getHotelName());</span>
+<span class="fc" id="L58">        existing.setCheckIn(req.getCheckIn());</span>
+<span class="fc" id="L59">        existing.setCheckOut(req.getCheckOut());</span>
+<span class="fc" id="L60">        return repo.save(existing);</span>
     }
 
+    /**
+     * Cancels a reservation by setting status=CANCELED.
+     * @param id reservation id
+     * @return updated reservation with CANCELED status
+     * @throws NotFoundException if the reservation does not exist
+     */
     public Reservation cancel(Long id) {
-<span class="fc" id="L41">        Reservation existing = repo.findById(id).orElseThrow(() -&gt; new NotFoundException(&quot;Reservation not found&quot;));</span>
-<span class="fc" id="L42">        existing.setStatus(ReservationStatus.CANCELED);</span>
-<span class="fc" id="L43">        return repo.save(existing);</span>
+<span class="fc" id="L70">        Reservation existing = repo.findById(id).orElseThrow(() -&gt; new NotFoundException(&quot;Reservation not found&quot;));</span>
+<span class="fc" id="L71">        existing.setStatus(ReservationStatus.CANCELED);</span>
+<span class="fc" id="L72">        return repo.save(existing);</span>
     }
 
+    /**
+     * Validates business rules for dates.
+     * @param in  check-in date
+     * @param out check-out date
+     * @throws BadRequestException if null, out ≤ in, or either date is not in the future
+     */
     private void validateDates(LocalDate in, LocalDate out) {
-<span class="fc bfc" id="L47" title="All 4 branches covered.">        if (in == null || out == null) throw new BadRequestException(&quot;Dates cannot be null&quot;);</span>
-<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (!out.isAfter(in)) throw new BadRequestException(&quot;Check-out must be after check-in&quot;);</span>
-<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (in.isBefore(LocalDate.now())) throw new BadRequestException(&quot;Check-in must be in the future&quot;);</span>
-<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (out.isBefore(LocalDate.now())) throw new BadRequestException(&quot;Check-out must be in the future&quot;);</span>
-<span class="fc" id="L51">    }</span>
+<span class="fc bfc" id="L82" title="All 4 branches covered.">        if (in == null || out == null) throw new BadRequestException(&quot;Dates cannot be null&quot;);</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (!out.isAfter(in)) throw new BadRequestException(&quot;Check-out must be after check-in&quot;);</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        if (in.isBefore(LocalDate.now())) throw new BadRequestException(&quot;Check-in must be in the future&quot;);</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">        if (out.isBefore(LocalDate.now())) throw new BadRequestException(&quot;Check-out must be in the future&quot;);</span>
+<span class="fc" id="L86">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
